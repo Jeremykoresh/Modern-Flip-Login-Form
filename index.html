@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flip Auth Card</title>
+<style>
+:root{
+  --bg:#060816;
+  --card:rgba(13,18,38,.56);
+  --card2:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.14);
+  --text:#eef2ff;
+  --muted:rgba(238,242,255,.68);
+  --accent:#7c3aed;
+  --accent2:#22d3ee;
+  --accent3:#34d399;
+  --shadow:0 24px 80px rgba(0,0,0,.45);
+  --radius:28px;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0
+}
+
+html,body{
+  height:100%
+}
+
+body{
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(34,211,238,.18), transparent 24%),
+    radial-gradient(circle at 80% 15%, rgba(124,58,237,.22), transparent 26%),
+    radial-gradient(circle at 50% 85%, rgba(52,211,153,.14), transparent 24%),
+    var(--bg);
+  color:var(--text);
+}
+
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  inset:auto;
+  width:42rem;
+  height:42rem;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:.55;
+  pointer-events:none;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+
+body::before{
+  top:-12rem;
+  left:-12rem;
+  background:rgba(34,211,238,.22);
+}
+
+body::after{
+  right:-14rem;
+  bottom:-14rem;
+  background:rgba(124,58,237,.24);
+  animation-duration:18s;
+}
+
+@keyframes drift{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(40px,30px,0) scale(1.12)}
+}
+
+#spotlight{
+  position:fixed;
+  width:28rem;
+  height:28rem;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle, rgba(255,255,255,.16), rgba(255,255,255,.08) 18%, rgba(255,255,255,.04) 30%, transparent 62%);
+  mix-blend-mode:screen;
+  filter:blur(10px);
+  transform:translate(-50%,-50%);
+  opacity:.85;
+}
+
+.particles{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.particle{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,.55);
+  box-shadow:0 0 18px rgba(255,255,255,.35);
+  animation: floatUp linear infinite;
+  opacity:.55;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(110vh) scale(.7); opacity:0}
+  10%{opacity:.55}
+  90%{opacity:.55}
+  to{transform:translateY(-20vh) scale(1.1); opacity:0}
+}
+
+.wrap{
+  position:relative;
+  z-index:2;
+  min-height:100%;
+  display:grid;
+  place-items:center;
+  padding:24px;
+}
+
+.shell{
+  width:min(430px, 92vw);
+  height:520px;
+  perspective:1600px;
+}
+
+.card{
+  position:relative;
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transition:transform 1s cubic-bezier(.2,.85,.2,1);
+  will-change:transform;
+}
+
+.shell.flipped .card{
+  transform:rotateY(180deg);
+}
+
+.side{
+  position:absolute;
+  inset:0;
+  border-radius:var(--radius);
+  overflow:hidden;
+  backface-visibility:hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
+    var(--card);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+}
+
+.side::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg, rgba(255,255,255,.32), rgba(255,255,255,0) 24%, rgba(255,255,255,.08) 50%, rgba(255,255,255,0) 74%, rgba(255,255,255,.22));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+  pointer-events:none;
+}
+
+.side::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.12), transparent 32%);
+  pointer-events:none;
+}
+
+.content{
+  position:relative;
+  height:100%;
+  padding:34px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:6px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  letter-spacing:.08em;
+  color:#0b1020;
+  background:linear-gradient(135deg, #fff, #9be7ff 32%, #c4b5fd 68%, #fff);
+  box-shadow:0 10px 30px rgba(34,211,238,.18);
+}
+
+.brand h1{
+  font-size:20px;
+  line-height:1;
+  letter-spacing:.02em;
+}
+
+.tag{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:4px;
+}
+
+.title{
+  font-size:34px;
+  line-height:1.05;
+  letter-spacing:-.03em;
+}
+
+.desc{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.7;
+  max-width:34ch;
+}
+
+.form{
+  display:grid;
+  gap:12px;
+  margin-top:8px;
+}
+
+.field{
+  position:relative;
+}
+
+.field input{
+  width:100%;
+  padding:15px 48px 15px 16px;
+  border:none;
+  outline:none;
+  border-radius:16px;
+  color:var(--text);
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  transition:.25s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.field input::placeholder{
+  color:rgba(238,242,255,.45);
+}
+
+.field input:focus{
+  border-color:rgba(34,211,238,.55);
+  box-shadow:
+    0 0 0 4px rgba(34,211,238,.12),
+    0 0 24px rgba(34,211,238,.14);
+  background:rgba(255,255,255,.09);
+}
+
+.icon-btn{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;
+  height:34px;
+  border:none;
+  border-radius:11px;
+  cursor:pointer;
+  color:var(--text);
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+}
+
+.primary{
+  position:relative;
+  border:none;
+  border-radius:16px;
+  padding:14px 18px;
+  cursor:pointer;
+  color:#07111e;
+  font-weight:800;
+  letter-spacing:.02em;
+  background:linear-gradient(135deg, #8b5cf6, #22d3ee 52%, #34d399);
+  overflow:hidden;
+  box-shadow:
+    0 14px 30px rgba(124,58,237,.22),
+    0 10px 24px rgba(34,211,238,.12);
+  transition:transform .25s ease, filter .25s ease;
+}
+
+.primary:hover{
+  transform:translateY(-2px);
+  filter:saturate(1.06) brightness(1.02);
+}
+
+.primary::before{
+  content:"";
+  position:absolute;
+  inset:-40% -60%;
+  background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.68) 50%, transparent 65%);
+  transform:translateX(-60%) rotate(8deg);
+  opacity:.7;
+}
+
+.primary:hover::before{
+  animation:shine .9s ease;
+}
+
+@keyframes shine{
+  from{transform:translateX(-60%) rotate(8deg)}
+  to{transform:translateX(60%) rotate(8deg)}
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.link{
+  color:#8be9ff;
+  cursor:pointer;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.link:hover{
+  text-decoration:underline;
+}
+
+.switch{
+  margin-top:8px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.switch button{
+  border:none;
+  background:none;
+  color:#8be9ff;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:max-content;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.8);
+  font-size:12px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.badge i{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#34d399;
+  box-shadow:0 0 18px #34d399;
+}
+
+.grid-glow{
+  position:absolute;
+  inset:auto 0 0 0;
+  height:160px;
+  background:linear-gradient(180deg, transparent, rgba(124,58,237,.10), rgba(34,211,238,.10));
+  pointer-events:none;
+}
+
+@media (max-width:480px){
+  .shell{height:600px}
+  .content{padding:26px}
+  .title{font-size:31px}
+}
+
+</style>
+</head>
+<body>
+<div id="spotlight"></div>
+<div class="particles" id="particles"></div>
+<div class="wrap">
+  <div class="shell" id="shell">
+    <div class="card" id="card">
+      <section class="side front">
+        <div class="grid-glow"></div>
+        <div class="content">
+          <div class="badge"><i></i><span>Secure Access</span></div>
+          <div class="brand">
+            <div class="logo">A</div>
+            <div>
+              <h1>Access Portal</h1>
+              <div class="tag">Sign in to continue</div>
+            </div>
+          </div>
+          <div>
+            <div class="title">Welcome back.</div>
+            <p class="desc">Enter your account details and continue to your dashboard with a clean, modern experience.</p>
+          </div>
+          <form class="form" onsubmit="event.preventDefault()">
+            <div class="field">
+              <input type="email" placeholder="Email address" autocomplete="email" />
+            </div>
+            <div class="field">
+              <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password" />
+              <button class="icon-btn" type="button" data-toggle="loginPass">◔</button>
+            </div>
+            <button class="primary" type="submit">Sign In</button>
+          </form>
+          <div class="row">
+            <label><input type="checkbox" /> Remember me</label>
+            <a class="link" href="javascript:void(0)">Forgot password?</a>
+          </div>
+          <div class="switch">
+            <span>New here?</span>
+            <button type="button" id="toRegister">Create account</button>
+          </div>
+          <div class="footer">Use a smooth flip card layout with glassmorphism and motion effects.</div>
+        </div>
+      </section>
+      <section class="side back">
+        <div class="grid-glow"></div>
+        <div class="content">
+          <div class="badge"><i></i><span>Join Now</span></div>
+          <div class="brand">
+            <div class="logo">A</div>
+            <div>
+              <h1>Access Portal</h1>
+              <div class="tag">Create your account</div>
+            </div>
+          </div>
+          <div>
+            <div class="title">Create an account.</div>
+            <p class="desc">Set up your profile in a few seconds and unlock a polished, responsive interface.</p>
+          </div>
+          <form class="form" onsubmit="event.preventDefault()">
+            <div class="field">
+              <input type="text" placeholder="Full name" autocomplete="name" />
+            </div>
+            <div class="field">
+              <input type="email" placeholder="Email address" autocomplete="email" />
+            </div>
+            <div class="field">
+              <input type="password" id="regPass" placeholder="Password" autocomplete="new-password" />
+              <button class="icon-btn" type="button" data-toggle="regPass">◔</button>
+            </div>
+            <button class="primary" type="submit">Sign Up</button>
+          </form>
+          <div class="switch">
+            <span>Already have an account?</span>
+            <button type="button" id="toLogin">Sign in</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script>
+const shell = document.getElementById('shell');
+const card = document.getElementById('card');
+const spotlight = document.getElementById('spotlight');
+const toRegister = document.getElementById('toRegister');
+const toLogin = document.getElementById('toLogin');
+toRegister.addEventListener('click', () => shell.classList.add('flipped'));
+toLogin.addEventListener('click', () => shell.classList.remove('flipped'));
+document.querySelectorAll('[data-toggle]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.getAttribute('data-toggle');
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.textContent = input.type === 'password' ? '◔' : '◕';
+  });
+});
+const setFX = (x, y) => {
+  card.style.setProperty('--mx', `${x}px`);
+  card.style.setProperty('--my', `${y}px`);
+};
+window.addEventListener('pointermove', (e) => {
+  spotlight.style.left = e.clientX + 'px';
+  spotlight.style.top = e.clientY + 'px';
+  const r = card.getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width - 0.5;
+  const py = (e.clientY - r.top) / r.height - 0.5;
+  const tiltX = -py * 10;
+  const tiltY = px * 12;
+  if (!shell.classList.contains('flipped')) {
+    card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+  } else {
+    card.style.transform = `rotateX(${tiltX}deg) rotateY(${180 + tiltY}deg)`;
+  }
+  setFX((e.clientX - r.left) + 'px', (e.clientY - r.top) + 'px');
+});
+window.addEventListener('pointerleave', () => {
+  spotlight.style.opacity = '.2';
+  card.style.transform = shell.classList.contains('flipped') ? 'rotateY(180deg)' : 'rotateY(0deg)';
+});
+window.addEventListener('pointerenter', () => {
+  spotlight.style.opacity = '.85';
+});
+const particles = document.getElementById('particles');
+for (let i = 0; i < 34; i++) {
+  const p = document.createElement('span');
+  p.className = 'particle';
+  const size = 3 + Math.random() * 5;
+  p.style.width = size + 'px';
+  p.style.height = size + 'px';
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDuration = 8 + Math.random() * 12 + 's';
+  p.style.animationDelay = '-' + Math.random() * 18 + 's';
+  p.style.opacity = 0.2 + Math.random() * 0.45;
+  particles.appendChild(p);
+}
+</script>
+</body>
+</html>

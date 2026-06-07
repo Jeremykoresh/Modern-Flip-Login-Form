@@ -17,7 +17,7 @@ Built using HTML, CSS, and JavaScript with a clean, responsive, and minimal desi
 ## 🖥️ Preview
 Add a screenshot of your project here:
 
-![Preview](assets/preview.png)
+![Preview](preview.png)
 
 ---
 
